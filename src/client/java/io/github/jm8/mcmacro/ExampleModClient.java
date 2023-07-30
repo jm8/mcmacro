@@ -1,4 +1,4 @@
-package com.example;
+package io.github.jm8.mcmacro;
 
 import net.fabricmc.api.ClientModInitializer;
 

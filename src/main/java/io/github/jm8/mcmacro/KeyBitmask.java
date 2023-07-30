@@ -1,4 +1,4 @@
-package com.example;
+package io.github.jm8.mcmacro;
 
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
@@ -32,6 +32,12 @@ public class KeyBitmask {
         KeyBinding[] bindings = trackedKeys(options);
         for (int i = 0; i < bindings.length; i++) {
             bindings[i].setPressed((bitmask & (1 << i)) != 0);
+        }
+    }
+
+    public static void reset(GameOptions options) {
+        for (var binding : trackedKeys(options)) {
+            binding.setPressed(false);
         }
     }
 }

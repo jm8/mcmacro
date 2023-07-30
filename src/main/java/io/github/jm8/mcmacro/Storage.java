@@ -1,4 +1,4 @@
-package com.example;
+package io.github.jm8.mcmacro;
 
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class Storage {
-    public static final Logger LOGGER = LoggerFactory.getLogger("modid");
+    public static final Logger LOGGER = LoggerFactory.getLogger("mcmacro");
     private static Path directory = FabricLoader.getInstance().getConfigDir().resolve("mcmacro");
 
     public static ArrayList<Integer> loadMacro(String name) throws FileNotFoundException {

@@ -1,15 +1,10 @@
-package com.example;
+package io.github.jm8.mcmacro;
 
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Random;
-
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
@@ -20,13 +15,12 @@ import org.slf4j.LoggerFactory;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.context.CommandContext;
 
 public class ExampleMod implements ModInitializer {
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
 	// That way, it's clear which mod wrote info, warnings, and errors.
-	public static final Logger LOGGER = LoggerFactory.getLogger("modid");
+	public static final Logger LOGGER = LoggerFactory.getLogger("mcmacro");
 
 	enum State {
 		NONE,
@@ -37,6 +31,7 @@ public class ExampleMod implements ModInitializer {
 	State state = State.NONE;
 	String macroName;
 	int time = 0;
+	int loops = 0;
 	boolean loop;
 	ArrayList<Integer> macro;
 
@@ -47,12 +42,12 @@ public class ExampleMod implements ModInitializer {
 			macro = Storage.loadMacro(macroName);
 			state = State.PLAYING;
 			time = 0;
-			source.getPlayer().sendMessage(Text.of("Looping..."));
 		} catch (FileNotFoundException e) {
-			source.getPlayer().sendMessage(Text.of("Macro not found"));
+			source.getPlayer().sendMessage(Text.of("Macro '" + macroName + "' not found"));
 			return 0;
 		}
-		source.getPlayer().sendMessage(Text.of("Playing..."));
+		loops = 0;
+		source.getPlayer().sendMessage(Text.of("Playing '" + macroName + "'..."));
 		return 1;
 	}
 
@@ -72,8 +67,11 @@ public class ExampleMod implements ModInitializer {
 				if (time >= macro.size()) {
 					if (loop) {
 						time = 0;
+						loops++;
+						client.player.sendMessage(Text.of("Looping '" + macroName + "' (" + loops + ")"));
 					} else {
-						client.player.sendMessage(Text.of("Done playing"));
+						client.player.sendMessage(Text.of("Finished '" + macroName + "'"));
+						KeyBitmask.reset(client.options);
 						state = State.NONE;
 					}
 				} else {
@@ -105,7 +103,8 @@ public class ExampleMod implements ModInitializer {
 												macro = new ArrayList<>();
 												state = State.RECORDING;
 												time = 0;
-												ctx.getSource().getPlayer().sendMessage(Text.of("Recording..."));
+												ctx.getSource().getPlayer()
+														.sendMessage(Text.of("Recording '" + macroName + "'..."));
 												return Command.SINGLE_SUCCESS;
 											})))
 							.then(literal("stop").executes(ctx -> {
