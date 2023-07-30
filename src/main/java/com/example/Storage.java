@@ -33,9 +33,9 @@ public class Storage {
     public static ArrayList<String> listMacros() {
         directory.toFile().mkdirs();
         var result = new ArrayList<String>();
-        directory.forEach(path -> {
-            result.add(path.getName(-1).toString());
-        });
+        for (var file : directory.toFile().listFiles()) {
+            result.add(file.getName());
+        }
         return result;
     }
 

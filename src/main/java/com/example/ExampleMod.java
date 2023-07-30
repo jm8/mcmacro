@@ -90,21 +90,24 @@ public class ExampleMod implements ModInitializer {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
 			dispatcher.register(
 					literal("macro")
-							.then(literal("loop").then(argument("name", StringArgumentType.string()).executes(ctx -> {
-								return play(ctx.getSource(), StringArgumentType.getString(ctx, "name"), true);
-							})))
-							.then(literal("play").then(argument("name", StringArgumentType.string()).executes(ctx -> {
-								return play(ctx.getSource(), StringArgumentType.getString(ctx, "name"), false);
-							})))
-							.then(literal("record")
-									.then(argument("name", StringArgumentType.string()).executes(ctx -> {
-										macroName = StringArgumentType.getString(ctx, "name");
-										macro = new ArrayList<>();
-										state = State.RECORDING;
-										time = 0;
-										ctx.getSource().getPlayer().sendMessage(Text.of("Recording..."));
-										return Command.SINGLE_SUCCESS;
+							.then(literal("loop").then(argument("name", StringArgumentType.string())
+									.suggests(new MacroSuggestionProvider()).executes(ctx -> {
+										return play(ctx.getSource(), StringArgumentType.getString(ctx, "name"), true);
 									})))
+							.then(literal("play").then(argument("name", StringArgumentType.string())
+									.suggests(new MacroSuggestionProvider()).executes(ctx -> {
+										return play(ctx.getSource(), StringArgumentType.getString(ctx, "name"), false);
+									})))
+							.then(literal("record")
+									.then(argument("name", StringArgumentType.string())
+											.suggests(new MacroSuggestionProvider()).executes(ctx -> {
+												macroName = StringArgumentType.getString(ctx, "name");
+												macro = new ArrayList<>();
+												state = State.RECORDING;
+												time = 0;
+												ctx.getSource().getPlayer().sendMessage(Text.of("Recording..."));
+												return Command.SINGLE_SUCCESS;
+											})))
 							.then(literal("stop").executes(ctx -> {
 								if (state == State.RECORDING) {
 									Storage.saveMacro(macroName, macro);
