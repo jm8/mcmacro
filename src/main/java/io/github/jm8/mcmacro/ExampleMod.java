@@ -1,15 +1,17 @@
 package io.github.jm8.mcmacro;
 
-import net.fabricmc.api.ModInitializer;
-import net.minecraft.text.Text;
-
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
+import net.minecraft.text.Text;
+
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.*;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
